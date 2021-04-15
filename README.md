@@ -94,7 +94,7 @@ The address above should show a list of the files stored in the */path/to/myproj
 
 ## Launch server
 
-First off, make sure that the files of the [files](files/README.md) folder are in the in the path (**myproject**) defined in the variable **DATA_DIRS** of the [app.cfg](config/app.cfg) file:
+First off, make sure that the files of the [files](files/README.md) folder are in the path (**myproject**) defined in the variable **DATA_DIRS** of the [app.cfg](config/app.cfg) file:
 
 ```shell
 DATA_DIRS = {
