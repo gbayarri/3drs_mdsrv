@@ -1,6 +1,6 @@
 # 3drs_mdsrv
 
-This is a summary with some fixes of the [MDsrv installation instructions](s://nglviewer.org/mdsrv/installation.html) of the MDsrv official site.
+This is a summary with some fixes of the [MDsrv installation instructions](https://nglviewer.org/mdsrv/installation.html) of the MDsrv official site.
 
 ## Software installation instructions 
 
