@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MDsrv/NGL - embedded</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+</head>
+<body>
+    <!-- NGL -->
+    <script src="ngl.2.0.0-dev.36.js"></script>
+
+    <script>
+        // Datasources
+        var mdsrvDatasource = new NGL.MdsrvDatasource( "http://localhost/api/" )
+        NGL.DatasourceRegistry.add("file", mdsrvDatasource)
+        NGL.setListingDatasource(mdsrvDatasource)
+        NGL.setTrajectoryDatasource(mdsrvDatasource)
+        
+        document.addEventListener( "DOMContentLoaded", function(){
+            stage = new NGL.Stage( "viewport" );
+            stage.loadFile( "/api/file/myproject/md_1u19.gro", { defaultRepresentation: false } ).then( function( comp ){
+                comp.setName( "comp_name" );
+                comp.setSelection( "" );
+                comp.addRepresentation( "tube", { sele: "*", opacity: 1, side: "front" } );
+                var t = comp.addTrajectory( "myproject/md_1u19.xtc", {centerPdb: true, removePbc: true, superpose: true, initialFrame: 0} );      
+                // tricky way for getting the total number of frames
+                setTimeout( function() {
+                    document.getElementById( "clipRange" ).max = (t.trajectory.frameCount - 1)
+                }, 200);
+                stage.setParameters( { backgroundColor: "#f1f1f1" } );
+                comp.autoView();
+            } );
+            var toggleRunMDs = document.getElementById( "play" );
+            var isRunning = false;
+            toggleRunMDs.addEventListener( "click", function(){
+                var trajComp = stage.getComponentsByName("comp_name").list[0].trajList[0];
+                var player = new NGL.TrajectoryPlayer(trajComp.trajectory, {timeout: 10, mode: "once", interpolateType: "spline",step: 1, interpolateStep: 5});
+                if( !isRunning ){
+                    player.play();
+                    isRunning = true;
+                    var clipNear = 0;
+                    trajComp.signals.frameChanged.add(function(){
+                        var fnum=trajComp.trajectory.currentFrame;                  
+                        clipRange.value = fnum;
+                        clipRange_val.innerHTML = parseInt(clipRange.value) + 1;
+                    });
+                }else{
+                    player.play();
+                    player.pause();
+                    isRunning = false;
+                }
+            } );
+            var clipRange = document.getElementById( "clipRange" );
+            var clipRange_val = document.getElementById( "clipRange_val" );
+
+            clipRange.oninput = function( e ){
+                var trajComp = stage.getComponentsByName("comp_name").list[0].trajList[0];
+                trajComp.setFrame(e.target.value)
+                clipRange_val.innerHTML = parseInt(e.target.value) + 1;
+            };
+        } );
+    </script>
+
+    <h2>MDsrv Test:</h2>
+    
+    <div style="display:inline;text-align: left;float: left; width: 305px;">
+
+        <div id="viewport" style="width:600px; height:600px;"></div>
+        <div style="width:600px;">
+            <input id="clipRange" type="range" value="0" min="0" max="100" step="1" style="width:80%;"></input><span id="clipRange_val">1</span>fs
+            <button id="play">&#9658; / &#9613;&#9613;</button>
+        </div>
+    </div>
+    
+</body>
