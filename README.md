@@ -20,7 +20,7 @@ The [MMB (IRB Barcelona)](https://mmb.irbbarcelona.org/) technical team has depl
   6. [Step 6: test server](#step-6-test-server)
 * [Launch server](#launch-server)
   1. [Step 1: place structure and trajectory files](#step-1-place-structure-and-trajectory-files)
-  2. [Step 2: create HTML & JS client files](#step-2-create-html-js-client-files)
+  2. [Step 2: create HTML & JS client files](#step-2-create-html--js-client-files)
   3. [Step 3: execute client](#step-3-execute-client)
 
 ## Software installation instructions 
