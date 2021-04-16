@@ -30,7 +30,7 @@ The [MMB (IRB Barcelona)](https://mmb.irbbarcelona.org/) technical team has depl
 Install via pip3 in the server as root:
 
 ```bash
-pip3 install mdsrv
+sudo pip3 install mdsrv
 ```
 
 ### Step 2: test mdsrv
