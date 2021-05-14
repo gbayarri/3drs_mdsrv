@@ -1,4 +1,4 @@
-# 3drs_mdsrv
+# MMB MDsrv
 
 This is a summary with some fixes of the [MDsrv installation instructions](https://nglviewer.org/mdsrv/installation.html) of the MDsrv official site.
 
