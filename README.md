@@ -22,6 +22,8 @@ The [MMB (IRB Barcelona)](https://mmb.irbbarcelona.org/) technical team has depl
   1. [Step 1: place structure and trajectory files](#step-1-place-structure-and-trajectory-files)
   2. [Step 2: create HTML & JS client files](#step-2-create-html--js-client-files)
   3. [Step 3: execute client](#step-3-execute-client)
+* [Install MDAnalysis](#install-mdanalysis)
+* [Install GridFS Fuse](#install-gridfs-fuse)
 
 ## Software installation instructions 
 
@@ -308,3 +310,63 @@ Below you can find the code for a basic **HTML + JS** example:
 Finally execute the server on a browser:
 
 > http:<span>//</span>localhost/
+
+## Install MDAnalysis
+
+By default, MDsrv supports the following formats: DCD, NCTRAJ/NetCDF, TRR, XTC, LAMMPSTRJ, XYZ, BINPOS, HDF5, DTR, ARC, TNG, GRO. Additionally, installing MDAnalysis, more formats will be supported: MDCRD/CRD, DMS, TRJ, ENT, NCDF.
+
+First off, create a **/var/www/.local** folder with permissions for the **www-data** user.
+
+Login as **www-data** user:
+
+```bash
+sudo su www-data
+```
+
+Install MDAnalysis:
+
+```bash
+pip3 install --user MDAnalysis[analysis] MDAnalysisTests
+```
+
+Execute tests to check that MDAnalysis is working properly (it takes between 15 and 20 minutes):
+
+```bash
+pytest --disable-pytest-warnings --pyargs MDAnalysisTests
+```
+
+Restart Apache:
+
+```bash
+sudo /etc/init.d/apache2 restart
+```
+
+## Install GridFS Fuse
+
+As seen in the [Step 3: create python app.cfg file](#step-3-create-python-appcfg-file), the route to the files folder must be a path in the machine where MDsrv is installed. In order to store the trajectories in a **MongoDB GridFS**, there is a workaround: install **GridFS Fuse** to access the MongoDB GridFS files as if they were in the machine file system.
+
+We have chosen **this version** of GridFS Fuse:
+
+https://github.com/jmfernandez/py_gridfs_fuse
+
+Install libfuse:
+
+```bash
+sudo apt-get install python3-pip libfuse3-dev
+```
+
+Install py_gridfs_fuse:
+
+```bash
+sudo -H pip3 install git+https://github.com/jmfernandez/py_gridfs_fuse.git@v0.3.0
+```
+
+Mount MongoDB GridFS in a folder of our MDsrv machine:
+
+```bash
+mount.gridfs_naive mongodb://<user>:<password>@<host>:<port>/<dbname>?authSource=admin /mnt/gridfs_fuse -o allow_other
+```
+
+Now, all the files of the GridFS in the **dbname** database will we available in **/mnt/gridfs_fuse**. Take into account that all the files must have different filename (no repeated names allowed at this moment).
+
+This installation of GridFS Fuse has been only used for reading.
