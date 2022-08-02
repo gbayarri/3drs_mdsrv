@@ -24,6 +24,9 @@ The [MMB (IRB Barcelona)](https://mmb.irbbarcelona.org/) technical team has depl
   3. [Step 3: execute client](#step-3-execute-client)
 * [Install MDAnalysis](#install-mdanalysis)
 * [Install GridFS Fuse](#install-gridfs-fuse)
+    + [Installation](#installation)
+    + [Mounting](#mounting)
+    + [Unmounting](#unmounting)
 
 ## Software installation instructions 
 
@@ -349,6 +352,8 @@ We have chosen **this version** of GridFS Fuse:
 
 https://github.com/jmfernandez/py_gridfs_fuse
 
+### Installation
+
 Install libfuse:
 
 ```bash
@@ -358,8 +363,10 @@ sudo apt-get install python3-pip libfuse3-dev
 Install py_gridfs_fuse:
 
 ```bash
-sudo -H pip3 install git+https://github.com/jmfernandez/py_gridfs_fuse.git@v0.3.0
+sudo -H pip3 install git+https://github.com/jmfernandez/py_gridfs_fuse.git@v0.4.0
 ```
+
+### Mounting
 
 Mount MongoDB GridFS in a folder of our MDsrv machine:
 
@@ -367,6 +374,28 @@ Mount MongoDB GridFS in a folder of our MDsrv machine:
 mount.gridfs_naive mongodb://<user>:<password>@<host>:<port>/<dbname>?authSource=admin /mnt/gridfs_fuse -o allow_other
 ```
 
+or 
+
+```bash
+naive_gridfs_fuse --mongodb-uri="mongodb://<user>:<password>@<host>:<port>/<dbname>?authSource=admin" --database="dbname" --mount-point="/mnt/gridfs_fuse" --show-versions -o allow_other
+```
+
 Now, all the files of the GridFS in the **dbname** database will we available in **/mnt/gridfs_fuse**. Take into account that all the files must have different filename (no repeated names allowed at this moment).
 
 This installation of GridFS Fuse has been only used for reading.
+
+### Unmounting
+
+Standard way:
+
+```bash
+umount gridfs
+```
+
+If target is busy:
+
+```bash
+lsof | grep fuse
+kill -9 <pid>
+umount /mnt/gridfs_fuse
+```
