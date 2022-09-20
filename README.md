@@ -368,7 +368,7 @@ sudo -H pip3 install git+https://github.com/jmfernandez/py_gridfs_fuse.git@v0.4.
 
 ### Mounting
 
-Mount MongoDB GridFS in a folder of our MDsrv machine:
+Mount MongoDB GridFS in a folder of our MDsrv machine (execute it as **sudo user**):
 
 ```bash
 mount.gridfs_naive mongodb://<user>:<password>@<host>:<port>/<dbname>?authSource=admin /mnt/gridfs_fuse -o allow_other
